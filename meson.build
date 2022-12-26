@@ -9,25 +9,22 @@ project(
     ],
 )
 
-add_global_arguments(
-    [
-        '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
-    ],
-    language: 'c',
-)
-
 config = configuration_data()
-config.set('EXEC_NAME', meson.project_name())
-config.set('GETTEXT_PACKAGE', meson.project_name())
-config.set('RESOURCES', '/' + '/'.join(meson.project_name().split('.')) + '/')
-config.set('VERSION', meson.project_version())
-config.set('PREFIX', get_option('prefix'))
-config.set('NAME', 'Tooth')
-config.set('WEBSITE', 'https://github.com/GeopJr/tooth')
-config.set('SUPPORT_WEBSITE', 'https://github.com/GeopJr/tooth/issues')
-config.set(
-    'COPYRIGHT',
-    '© 2018-2021 bleak_grey\n© 2022 Evangelos \"GeopJr\" Paterakis',
+config.set_quoted('EXEC_NAME', meson.project_name())
+config.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+config.set_quoted('DOMAIN', meson.project_name ())
+config.set_quoted('RESOURCES', '/' + '/'.join(meson.project_name().split('.')) + '/')
+config.set_quoted('VERSION', meson.project_version())
+config.set_quoted('PREFIX', get_option('prefix'))
+config.set_quoted('NAME', 'Tooth')
+config.set_quoted('WEBSITE', 'https://github.com/GeopJr/tooth')
+config.set_quoted('SUPPORT_WEBSITE', 'https://github.com/GeopJr/tooth/issues')
+configure_file(output: 'config.h', configuration: config)
+
+add_project_arguments (
+  '--include','config.h',
+  '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
+  language: 'c'
 )
 
 gnome = import('gnome')
@@ -44,6 +41,7 @@ libgtk_dep = dependency('gtk4', version: '>=4.0.0', required: true)
 libadwaita_dep = dependency('libadwaita-1', version: '>=1.2', required: true)
 
 sources = files(
+    'vapi/build.vapi',
     'src/API/Account.vala',
     'src/API/AccountField.vala',
     'src/API/Attachment.vala',
@@ -126,16 +124,9 @@ sources = files(
     'src/Widgets/VoteCheckButton.vala',
 )
 
-build_file = configure_file(
-    input: 'src/Build.vala.in',
-    output: 'Build.vala',
-    configuration: config,
-)
-
 executable(
     meson.project_name(),
     asresources,
-    build_file,
     sources,
     dependencies: [
         dependency('glib-2.0', version: '>=2.30.0'),
