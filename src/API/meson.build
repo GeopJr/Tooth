@@ -1,0 +1,17 @@
+sources += files(
+  'Account.vala',
+  'AccountField.vala',
+  'Attachment.vala',
+  'Conversation.vala',
+  'Emoji.vala',
+  'Entity.vala',
+  'List.vala',
+  'Mention.vala',
+  'Notification.vala',
+  'Poll.vala',
+  'PollOption.vala',
+  'Relationship.vala',
+  'SearchResults.vala',
+  'Status.vala',
+  'Tag.vala',
+)
