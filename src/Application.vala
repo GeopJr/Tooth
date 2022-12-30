@@ -242,7 +242,7 @@ namespace Tooth {
 				debug_info = print_info (),
 				developers = DEVELOPERS,
 				artists = ARTISTS,
-				// translators: Write you Name<email> here :)
+				// translators: Write your Name<email> here :)
 				translator_credits = _("translator-credits")
 			};
 
