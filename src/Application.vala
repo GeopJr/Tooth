@@ -95,7 +95,7 @@ namespace Tooth {
 		protected override void startup () {
 			base.startup ();
 			try {
-				Build.print_info ();
+				print_info ();
 				Adw.init ();
 
 				settings = new Settings ();
@@ -184,6 +184,23 @@ namespace Tooth {
 			return false;
 		}
 
+		private string print_info () {
+			var os_name = GLib.Environment.get_os_info ("NAME") ?? "Unknown";
+			var os_ver = GLib.Environment.get_os_info ("VERSION") ?? "Unknown";
+			string SYSTEM_INFO = "";
+
+			SYSTEM_INFO = @"$(Build.NAME) $(Build.VERSION)";
+			SYSTEM_INFO += @"\nRunning on: $os_name $os_ver";
+			SYSTEM_INFO += @"\nBuild prefix: \"$(Build.PREFIX)\"";
+
+			var lines = SYSTEM_INFO.split ("\n");
+			foreach (unowned string line in lines) {
+				message (line);
+			}
+
+			return SYSTEM_INFO;
+		}
+
 		void compose_activated () {
 			new Dialogs.Compose ();
 		}
@@ -201,14 +218,16 @@ namespace Tooth {
 		}
 
 		void about_activated () {
-			const string[] artists = {
+			const string[] ARTISTS = {
 				"Tobias Bernard"
 			};
 
-			const string[] developers = {
+			const string[] DEVELOPERS = {
 				"bleak_grey",
 				"Evangelos \"GeopJr\" Paterakis"
 			};
+
+			const string COPYRIGHT = "© 2018-2021 bleak_grey\n© 2022 Evangelos \"GeopJr\" Paterakis";
 
 			var dialog = new Adw.AboutWindow () {
 				transient_for = main_window,
@@ -219,11 +238,12 @@ namespace Tooth {
 				version = Build.VERSION,
 				support_url = Build.SUPPORT_WEBSITE,
 				license_type = License.GPL_3_0_ONLY,
-				copyright = Build.COPYRIGHT,
-				debug_info = Build.SYSTEM_INFO,
-				developers = developers,
-				artists = artists,
-				translator_credits = Build.TRANSLATOR != " " ? Build.TRANSLATOR : ""
+				copyright = COPYRIGHT,
+				debug_info = print_info (),
+				developers = DEVELOPERS,
+				artists = ARTISTS,
+				// translators: Write your Name<email> here :)
+				translator_credits = _("translator-credits")
 			};
 
 			// For some obscure reason, const arrays produce duplicates in the credits.
